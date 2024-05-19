@@ -1,57 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
+import HomePage from './Components/HomePage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import NavBar from './Components/NavBar';
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
+import ManageApplicantStatus from './Components/Management/ManageApplicantStatus';
+import ManageApplicantAppointment from './Components/Management/ManageApplicantAppointment';
+import ManageVaccSpots from './Components/Management/ManageVaccSpots';
 
 function App() {
+
+  const RouterRoutes = () => {
+
+    return(
+      <Routes>
+        <Route index element={<HomePage />}></Route>
+        <Route path='/ManageApplicantStatus' element={<ManageApplicantStatus />}></Route>
+        <Route path='/ManageAppointmentStatus' element={<ManageApplicantAppointment />}></Route>
+        <Route path='/ManageVaccSpots' element={<ManageVaccSpots />}></Route>
+      </Routes>
+    )
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <>
+    <Router>
+      <NavBar />
+      <RouterRoutes />
+    </Router>
+    </> 
   );
 }
 
