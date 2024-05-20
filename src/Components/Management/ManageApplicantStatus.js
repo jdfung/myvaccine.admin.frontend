@@ -2,25 +2,46 @@ import { Row } from "react-bootstrap"
 import { GetAllApplicants } from "../../Services/Applicant"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
 export default () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const applicantData = useSelector(state => state.ApplicantsReducer.Applicants);
     const [allApplicantData, setAllApplicantData] = useState({Data: null, isFetching: true})
 
     useEffect(() => {
         GetAllApplicants(dispatch);
+        
     }, [])
 
     useEffect(() => {
-        setAllApplicantData({Data: applicantData, isFetching: false})
-        
+        setTimeout(() => setAllApplicantData({Data: applicantData, isFetching: false}), 500)
     }, [applicantData])
     
+    const handleManage = (id) => {
+        
+        setAllApplicantData((prev) => ({
+            ...prev,
+            isFetching: true
+        }))
+        
+        navigate('/EditApplicantStatus', {
+            state: {
+                id: id
+            }
+        })
+        
+    }
 
     return allApplicantData.isFetching
-    ?(<div><h1>Loading</h1></div>)
+    ?(  <div className="mt-5 d-flex justify-content-center">
+            <div className="spinner-border" role="status">
+                <span className="sr-only"></span>
+            </div>
+        </div>
+    )
     
     :(
         <div className="container mt-5">
@@ -62,13 +83,13 @@ export default () => {
                                     allApplicantData.Data.map((data, index) => {
                                         
                                         return(
-                                            <tr>
+                                            <tr key={data.applicant_id}>
                                                 <th scope="row">{index + 1}</th>
                                                 <td>{data.ic}</td>
                                                 <td>{data.name}</td>
-                                                <td>{data.firstDose ? <input type="checkbox" checked="checked"></input> : <input type="checkbox" disabled="disabled"></input>}</td>
-                                                <td>{data.secondDose? <input type="checkbox" disabled="disabled" checked="checked"></input> : <input type="checkbox" disabled="disabled"></input>}</td>
-                                                <td><button className="btn btn-primary">Update</button></td>
+                                                <td>{data.firstDose ? <input type="checkbox" checked="checked" readOnly></input> : <input type="checkbox" disabled="disabled" readOnly></input>}</td>
+                                                <td>{data.secondDose? <input type="checkbox" checked="checked" readOnly></input> : <input type="checkbox" disabled="disabled" readOnly></input>}</td>
+                                                <td><button className="btn btn-primary" onClick={() => handleManage(data.applicant_id)}>Update</button></td>
                                             </tr>
                                         )
                                     })
