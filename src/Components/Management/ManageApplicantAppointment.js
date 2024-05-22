@@ -3,6 +3,7 @@ import { Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetAllAppointment } from "../../Services/Appointment";
+import Loader from "../Loader";
 
 export default () => {
     const dispatch = useDispatch();
@@ -25,11 +26,7 @@ export default () => {
 
 
     return allAppointmentsData.isFetching
-    ?(<div className="mt-5 d-flex justify-content-center">
-        <div className="spinner-border" role="status">
-            <span className="sr-only"></span>
-        </div>
-    </div>)
+    ?(<Loader />)
     :(
         <>
             <div className="container mt-5">

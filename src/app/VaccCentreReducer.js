@@ -4,11 +4,15 @@ import { createSlice } from "@reduxjs/toolkit";
 export const VaccCentreReducer = createSlice({
     name: 'VaccCentre',
     initialState: {
-        VaccCentre: []
+        VaccCentre: [],
+        SpeciVaccCentre: []
     },
     reducers: {
         setVaccCentre: (state, action) => {
             return {...state, VaccCentre: [...action.payload]}
+        },
+        setSpeciVaccCentre: (state, action) => {
+            return {...state, SpeciVaccCentre: action.payload}
         }
     }
 })

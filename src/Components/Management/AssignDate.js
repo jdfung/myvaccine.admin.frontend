@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AssignAppointmentDate, GetSpeciAppointment } from "../../Services/Appointment";
 import { Col, Row } from "react-bootstrap";
+import Loader from "../Loader";
 
 export default () => {
     const {state} = useLocation()
@@ -36,11 +37,7 @@ export default () => {
     } 
 
     return speciAppointment.isFetching
-    ? (<div className="mt-5 d-flex justify-content-center">
-            <div className="spinner-border" role="status">
-                <span className="sr-only"></span>
-            </div>
-        </div>)
+    ? (<Loader />)
     :(
         <div className="container mt-5">
             <Row >

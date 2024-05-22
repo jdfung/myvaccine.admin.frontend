@@ -10,6 +10,7 @@ import ManageApplicantAppointment from './Components/Management/ManageApplicantA
 import ManageVaccSpots from './Components/Management/ManageVaccSpots';
 import EditApplicantStatus from './Components/Management/EditApplicantStatus';
 import AssignDate from './Components/Management/AssignDate';
+import EditVaccSpot from './Components/Management/EditVaccSpot';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path='/ManageVaccSpots' element={<ManageVaccSpots />}></Route>
         <Route path='/EditApplicantStatus' element={<EditApplicantStatus />}></Route>
         <Route path='/AssignDate' element={<AssignDate />}></Route>
+        <Route path='/EditVaccSpot' element={<EditVaccSpot />}></Route>
       </Routes>
     )
   }

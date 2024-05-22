@@ -1,17 +1,28 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { GetAllVaccCentres } from "../../Services/VaccCentre"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Col, Row } from "react-bootstrap";
+import Loader from "../Loader";
+import { useNavigate } from "react-router-dom";
 
 export default () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const allVaccSpots = useSelector(state => state.VaccCentreReducer.VaccCentre)
+    const [allVaccData, setAllVaccData] = useState({Data: null, isFetching: true});
 
     useEffect(() => {
         GetAllVaccCentres(dispatch)
     }, [])
 
-    return(
+    useEffect(() => {
+        setTimeout(() => setAllVaccData({Data: allVaccSpots, isFetching: false}), 600);
+    }, [allVaccSpots])
+
+    return allVaccData.isFetching
+    ? (<Loader />)
+    : (
         <div className="container mt-5">
             <Row className="align-items-center mb-5">
                 <h2 className="card-title">
@@ -21,7 +32,7 @@ export default () => {
             <Row className="align-items-center mb-3">
                 <div className="col-md-6">
                     <div className="mb-3">
-                        <h5 className="card-title">Vaccination Centres List <span className="text-muted fw-normal ms-2">()</span></h5>
+                        <h5 className="card-title">Vaccination Centres List <span className="text-muted fw-normal ms-2">({allVaccData.Data.length})</span></h5>
                     </div>
                 </div>
             </Row>
@@ -50,7 +61,28 @@ export default () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                {
+                                    allVaccData.Data.map((data, index) => {
+                                        return (
+                                            <tr key={data.centreId}>
+                                                <th scope="row">{index + 1}</th>
+                                                <td>{data.centreId}</td>
+                                                <td>{data.centreName}</td>
+                                                <td>{data.state}</td>
+                                                <td>{data.distrct}</td>
+                                                <td>{data.address}</td>
+                                                <td>
+                                                    <Row><button className="btn btn-primary" onClick={() => navigate('/EditVaccSpot', {
+                                                        state: {
+                                                            id: data.centreId
+                                                        }
+                                                    })}>Edit</button></Row>
+                                                    <Row><button className="btn btn-danger">Delete</button></Row>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>
