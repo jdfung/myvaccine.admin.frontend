@@ -42,7 +42,7 @@ export default () => {
                         <input className="form-control mr-3" placeholder="Search by ID"></input>
                         <button className="btn btn-primary mx-2">Search</button>
                     </form>
-                    <button className="btn btn-success">Add</button>
+                    <button className="btn btn-success" type="button" onClick={() => navigate('/AddVaccCentre')}>Add</button>
                 </div>
             </Row>
             <Row>
@@ -74,7 +74,9 @@ export default () => {
                                                 <td>
                                                     <Row><button className="btn btn-primary" onClick={() => navigate('/EditVaccSpot', {
                                                         state: {
-                                                            id: data.centreId
+                                                            id: data.centreId,
+                                                            state: data.state,
+                                                            district: data.distrct
                                                         }
                                                     })}>Edit</button></Row>
                                                     <Row><button className="btn btn-danger">Delete</button></Row>

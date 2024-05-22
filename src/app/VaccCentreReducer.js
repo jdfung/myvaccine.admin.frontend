@@ -5,7 +5,9 @@ export const VaccCentreReducer = createSlice({
     name: 'VaccCentre',
     initialState: {
         VaccCentre: [],
-        SpeciVaccCentre: []
+        SpeciVaccCentre: [], 
+        States: [],
+        Districts: []
     },
     reducers: {
         setVaccCentre: (state, action) => {
@@ -13,9 +15,15 @@ export const VaccCentreReducer = createSlice({
         },
         setSpeciVaccCentre: (state, action) => {
             return {...state, SpeciVaccCentre: action.payload}
+        },
+        setAllStates: (state, action) => {
+            return {...state, States: [...action.payload]}
+        },
+        setAllDistricts: (state, action) => {
+            return {...state, Districts: action.payload}
         }
     }
 })
 
-export const {setVaccCentre} = VaccCentreReducer.actions;
+export const {setVaccCentre, setSpeciVaccCentre, setAllStates, setAllDistricts} = VaccCentreReducer.actions;
 export default VaccCentreReducer.reducer;

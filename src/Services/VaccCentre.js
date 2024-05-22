@@ -1,5 +1,5 @@
 import axios from "axios"
-import { setVaccCentre } from "../app/VaccCentreReducer";
+import { setAllDistricts, setAllStates, setSpeciVaccCentre, setVaccCentre } from "../app/VaccCentreReducer";
 
 const stateDistrict = axios.create({
     baseURL: 'https://jian.sh/malaysia-api/state/v1',
@@ -26,17 +26,53 @@ export const GetSpeciVaccCentre = async (dispatch, id) => {
         }
     })
     .then((result) => {
-        console.log(result.data)
+        dispatch(setSpeciVaccCentre(result.data))
     }).catch((err) => {
         console.log("Exception thrown: " + err);
     })
 }
 
-export const GetAllStates = async () => {
+export const GetAllStates = async (dispatch) => {
     await stateDistrict.get("all.json")
     .then((result) => {
-        // console.log(result.data);
-        
+        dispatch(setAllStates(result.data))
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
     })
 
+}
+
+export const GetAllDistricts = async (dispatch, district) => {
+    await stateDistrict.get(district + '.json')
+    .then((result) => {
+        dispatch(setAllDistricts(result.data))
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
+    })
+}
+
+export const UpdateVaccCentre = async (vaccCentre) => {
+    const status = await axiosInstance.put('', vaccCentre)
+    .then((result) => {
+        
+        return result.status
+    }).catch((err) => {
+        
+        console.log("Exception thrown: " + err);
+        return err.response.status
+    })
+
+    return status
+}
+
+export const AddVaccCentre = async (vaccCentre) => {
+    const status = await axiosInstance.post('', vaccCentre)
+    .then((result) => {
+        return result.status;
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
+        return err.response.status;
+    })
+
+    return status;
 }

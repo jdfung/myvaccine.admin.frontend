@@ -1,33 +1,37 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux"
-import { useLocation, useNavigate } from "react-router-dom"
-import { GetAllDistricts, GetAllStates, GetSpeciVaccCentre, UpdateVaccCentre } from "../../Services/VaccCentre";
-import { Col, Row } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom"
+import { GetAllStates, GetAllDistricts, AddVaccCentre } from "../../Services/VaccCentre";
 import Loader from "../Loader";
 
 export default () => {
 
-    const { state } = useLocation();
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const speciVaccCentre = useSelector(state => state.VaccCentreReducer.SpeciVaccCentre);
+    const dispatch = useDispatch();
     const AllStates = useSelector(state => state.VaccCentreReducer.States)
     const AllDistricts = useSelector(state => state.VaccCentreReducer.Districts)
-    const [vaccCentreData, setVaccCentreData] = useState({ Data: null, isFetching: true })
     const [StateData, setStateData] = useState({ Data: null, isFetching: true });
     const [Districts, setDistricts] = useState({ Data: null, isFetching: true });
     const [formData, setFormData] = useState(null);
 
     useEffect(() => {
-        GetSpeciVaccCentre(dispatch, state.id)
         GetAllStates(dispatch)
     }, [])
 
     useEffect(() => {
         setStateData({ Data: AllStates, isFetching: false })
-        setVaccCentreData({ Data: speciVaccCentre, isFetching: false })
-        setFormData(speciVaccCentre)
-    }, [AllStates, speciVaccCentre])
+    }, [AllStates])
+
+    useEffect(() => {
+        setDistricts((prev) => ({ ...prev, Data: AllDistricts }));
+        if(Object.keys(AllDistricts).length > 0)
+            {
+                setFormData((prev) => ({
+                    ...prev,
+                    distrct: AllDistricts.administrative_districts[0]
+                }))
+            }
+    }, [AllDistricts])
 
     const handleDistricts = async (event) => {
         var value = null;
@@ -43,25 +47,12 @@ export default () => {
         setDistricts((prev) => ({ ...prev, isFetching: true }))
         await GetAllDistricts(dispatch, value)
         setDistricts((prev) => ({ ...prev, isFetching: false }))
-
     }
 
-    useEffect(() => {
-        setDistricts((prev) => ({ ...prev, Data: AllDistricts }));
-        
-        if(Object.keys(AllDistricts).length > 0)
-            {
-                setFormData((prev) => ({
-                    ...prev,
-                    distrct: AllDistricts.administrative_districts[0]
-                }))
-            }
-        
-    }, [AllDistricts])
+    const handleChange = (e) => {
+        const value = e.target.value;
+        const name = e.target.name;
 
-    const handleChange = (event) => {
-        const value = event.target.value;
-        const name = event.target.name;
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -70,29 +61,27 @@ export default () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const status = await UpdateVaccCentre(formData)
-        
+        const status = await AddVaccCentre(formData);
         if(status == 200)
             {
                 navigate('/ManageVaccSpots')
             }
     }
 
-    return vaccCentreData.isFetching && StateData.isFetching
-        ? (<Loader />)
-        : (
-            <div className="container mt-5">
-                <h3 className="Card-title">Edit Vaccination Centre</h3>
+    return StateData.isFetching
+    ? (<Loader />)
+    :(
+        <div className="container mt-5">
+                <h3 className="Card-title">New Vaccination Centre</h3>
                 <form className="d-flex flex-column" onSubmit={(e) => handleSubmit(e)}>
                     <div className="form-group">
                         <label>Centre Name</label>
-                        <input type="text" className="form-control" defaultValue={vaccCentreData.Data.centreName} name="centreName" onChange={(e) => handleChange(e)}></input>
+                        <input type="text" className="form-control" name="centreName" onChange={(e) => handleChange(e)}></input>
                     </div>
 
                     <div className="form-group">
                         <label>State</label>
-                        <select className="form-select" onChange={(e) => {handleDistricts(e); handleChange(e)}} name="state" defaultValue="default">
-                            <option value="default" disabled>{vaccCentreData.Data.state}</option>
+                        <select className="form-select" name="state" onChange={(e) => {handleDistricts(e); handleChange(e)}}>
                             {
                                 StateData.Data.map((state) =>
 
@@ -109,7 +98,7 @@ export default () => {
 
                             {
                                 Districts.isFetching
-                                    ? (<option value="default" disabled>{vaccCentreData.Data.distrct}</option>)
+                                    ? (<option>----Select District----</option>)
                                     : (Districts.Data.administrative_districts.map((district) =>
                                     (
                                         <option key={district} value={district}>{district}</option>
@@ -120,17 +109,17 @@ export default () => {
 
                     <div className="form-group">
                         <label>Address</label>
-                        <textarea className="form-control" defaultValue={vaccCentreData.Data.address} name="address" onChange={(e) => handleChange(e)}></textarea>
+                        <textarea className="form-control" name="address" onChange={(e) => handleChange(e)}></textarea>
                     </div>
 
 
                     <div className="mt-3 d-flex justify-content-center">
-                        <button className="btn btn-primary mx-3" type="submit">Edit</button>
+                        <button className="btn btn-primary mx-3" type="submit">Add</button>
                         <button className="btn btn-danger mx-3" type="button" onClick={() => navigate('/ManageVaccSpots')}>Cancel</button>
                     </div>
 
                 </form>
 
             </div>
-        )
+    )
 }
