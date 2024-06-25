@@ -1,5 +1,7 @@
 import axios from "axios"
 import { setAllDistricts, setAllStates, setSpeciVaccCentre, setVaccCentre } from "../app/VaccCentreReducer";
+import { GetAuthHeader } from "./Login";
+import api from "../api/api";
 
 const stateDistrict = axios.create({
     baseURL: 'https://jian.sh/malaysia-api/state/v1',
@@ -7,20 +9,25 @@ const stateDistrict = axios.create({
 
 const axiosInstance = axios.create({
     baseURL: 'https://localhost:7015/VaccCentre',
+    
 })
 
+
+
 export const GetAllVaccCentres = async (dispatch) => {
-    await axiosInstance.get('')
+    const status = await api.get('VaccCentre')
     .then((result) => {
-        
         dispatch(setVaccCentre(result.data))
+        return result.data;
     }).catch((err) => {
         console.log("Exception thrown: " + err);
     })
+
+    return status;
 }
 
 export const GetSpeciVaccCentre = async (dispatch, id) => {
-    await axiosInstance.get('GetByID', {
+    await api.get('VaccCentre/GetByID', {
         params: {
             id: id
         }
@@ -30,6 +37,21 @@ export const GetSpeciVaccCentre = async (dispatch, id) => {
     }).catch((err) => {
         console.log("Exception thrown: " + err);
     })
+}
+
+export const SearchVaccByID = async (dispatch, id) => {
+    const status = await api.get('VaccCentre/GetByID', {
+        params: {
+            id: id
+        }
+    })
+    .then((result) => {
+        dispatch(setVaccCentre([result.data]))
+        return result.status;
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
+    })
+    return status;
 }
 
 export const GetAllStates = async (dispatch) => {
@@ -52,7 +74,7 @@ export const GetAllDistricts = async (dispatch, district) => {
 }
 
 export const UpdateVaccCentre = async (vaccCentre) => {
-    const status = await axiosInstance.put('', vaccCentre)
+    const status = await api.put('VaccCentre', vaccCentre)
     .then((result) => {
         
         return result.status
@@ -66,9 +88,24 @@ export const UpdateVaccCentre = async (vaccCentre) => {
 }
 
 export const AddVaccCentre = async (vaccCentre) => {
-    const status = await axiosInstance.post('', vaccCentre)
+    const status = await api.post('VaccCentre', vaccCentre)
     .then((result) => {
         return result.status;
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
+        return err.response.status;
+    })
+
+    return status;
+}
+
+export const deleteVaccCentre = async (id) => {
+    const status = await api.delete('VaccCentre', {
+        params: {
+            id: id
+        }
+    }).then((result) => {
+        return result.status
     }).catch((err) => {
         console.log("Exception thrown: " + err);
         return err.response.status;

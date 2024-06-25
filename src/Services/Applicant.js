@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setApplicants, setSpeciApplicants } from "../app/ApplicantsReducer";
+import api from "../api/api";
 
 const axiosInstance = axios.create({
     baseURL: 'https://localhost:7015/Applicants'
@@ -8,19 +9,18 @@ const axiosInstance = axios.create({
 
 export const GetAllApplicants = async (dispatch) => {
 
-    await axiosInstance.get()
+    await api.get('Applicants')
     .then((result) => {
         // console.log(result.data.length);
         dispatch(setApplicants(result.data));
     }).catch((err) => {
         console.log("Exception thrown: " + err);
     })
-    
 
 }
 
 export const GetSpecificApplicants = async (dispatch, id) => {
-    await axiosInstance.get('GetByID/' + id)
+    await api.get('Applicants/GetByID/' + id)
     .then((result) => {
         dispatch(setSpeciApplicants(result.data));
     }).catch((err) => {
@@ -28,8 +28,20 @@ export const GetSpecificApplicants = async (dispatch, id) => {
     })
 }
 
+export const GetApplicantByIC = async (dispatch, ic) => {
+    const status = await api.get('Applicants/GetByIc/' + ic)
+    .then((res) => {
+        dispatch(setApplicants([res.data]))
+        return res.status
+    }).catch((err) => {
+        console.log("Exception thrown: " + err);
+    })
+
+    return status
+}
+
 export const EditApplicantStatus = async (applicant) => {
-    const status = await axiosInstance.put('', applicant)
+    const status = await api.put('Applicants', applicant)
     .then((result) => {
         console.log(result.status)
         return result.status

@@ -27,12 +27,12 @@ export default () => {
         setDate(value);
     }
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event, dose) => {
         event.preventDefault();
-       const status = await AssignAppointmentDate(state.id, date)
+       const status = await AssignAppointmentDate(state.id, dose, date)
        if(status == 200)
         {
-            navigate('/ManageAppointmentStatus')
+            navigate('/ManageApplicantAppointment')
         }
     } 
 
@@ -61,13 +61,19 @@ export default () => {
 
                 <Row className="mb-3">
                     <Col><h5 className="card-title">First Appointment Date:</h5></Col>
-                    <Col><p className="card-text">{speciAppointment.Data.firstDoseDate}</p></Col>
+                    <Col><p className="card-text">{speciAppointment.Data.firstDoseDate !== null ? speciAppointment.Data.firstDoseDate : 
+                        <form className="d-flex" onSubmit={(event) => handleSubmit(event, 1)}>
+                            <input type="date" className="form-control mr-2" onChange={(event) => handleChange(event)} required></input>
+                            <button className="btn btn-primary ml-2" type="submit">Assign</button>
+                        </form>
+                    }</p></Col>
+                    {/* <Col><p className="card-text">{speciAppointment.Data.firstDoseDate}</p></Col> */}
                 </Row>
 
                 <Row className="mb-3">
                     <Col><h5 className="card-title">Second Appointment Date:</h5></Col>
-                    <Col><p className="card-text">{speciAppointment.Data.secondDoseDate != null ? speciAppointment.Data.secondDosedate : 
-                        <form className="d-flex" onSubmit={(event) => handleSubmit(event)}>
+                    <Col><p className="card-text">{speciAppointment.Data.secondDoseDate !== null ? speciAppointment.Data.secondDosedate : 
+                        <form className="d-flex" onSubmit={(event) => handleSubmit(event, 2)}>
                             <input type="date" className="form-control mr-2" onChange={(event) => handleChange(event)} required></input>
                             <button className="btn btn-primary ml-2" type="submit">Assign</button>
                         </form>

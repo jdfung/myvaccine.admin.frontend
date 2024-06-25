@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { GetAllAppointment } from "../../Services/Appointment";
+import { GetAllAppointment, SearchByID } from "../../Services/Appointment";
 import Loader from "../Loader";
 
 export default () => {
@@ -10,6 +10,7 @@ export default () => {
     const navigate = useNavigate();
     const appointmentData = useSelector(state => state.AppointmentsReducer.Appointments);
     const [allAppointmentsData, setAllAppointmentsData] = useState({Data: null, isFetching: true})
+    const [searchFrom, setSearchForm] = useState("");
 
     useEffect(() => {
         GetAllAppointment(dispatch)
@@ -19,8 +20,22 @@ export default () => {
         setTimeout(() => setAllAppointmentsData({Data: appointmentData, isFetching: false}), 500)
     }, [appointmentData])
 
-    const handleSubmit = (event) => {
+    const handleChange = (e) => {
+        var value = e.target.value;
+        setSearchForm(value);
+    }
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        const status = await SearchByID(dispatch, searchFrom);
+        if(status == 200)
+            {
+
+            }
+        else
+        {
+            alert("Appointment does not exist")
+        }
 
     }
 
@@ -41,8 +56,8 @@ export default () => {
                 </div>
 
                 <div className="col-md-6">
-                    <form className="d-flex">
-                        <input className="form-control mx-3" placeholder="Search by appointment ID"></input>
+                    <form className="d-flex" onSubmit={(e) => handleSubmit(e)}>
+                        <input className="form-control mx-3" placeholder="Search by appointment ID" onChange={(e) => handleChange(e)}></input>
                         <button className="btn btn-primary">Search</button>
                     </form>
                 </div>
@@ -60,6 +75,7 @@ export default () => {
                                     <th scope="col">Name</th>
                                     <th scope="col">Vaccination Centre</th>
                                     <th scope="col">Vaccination Choice</th>
+                                    <th scope="col">1st Dose Date</th>
                                     <th scope="col">2nd Dose Date</th>
                                 </tr>
                             </thead>
@@ -75,6 +91,16 @@ export default () => {
                                                 <td>{data.name}</td>
                                                 <td>{data.vaccCenter}</td>
                                                 <td>{data.vaccChoice}</td>
+                                                <td>{data.firstDoseDate != null ? data.firstDoseDate : 
+                                                
+                                                <button className="btn btn-primary w-100" onClick={() => {
+                                                   navigate('/AssignDate', {
+                                                       state: {
+                                                           id: data.appointment_id
+                                                       }
+                                                   })
+                                                }}>Assign Date</button>
+                                               }</td>
                                                 <td>{data.secondDoseDate != null ? data.secondDoseDate : 
                                                 
                                                  <button className="btn btn-primary w-100" onClick={() => {

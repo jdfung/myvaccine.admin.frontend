@@ -126,7 +126,7 @@ export default () => {
 
                     <div className="mt-3 d-flex justify-content-center">
                         <button className="btn btn-primary mx-3" type="submit">Edit</button>
-                        <button className="btn btn-danger mx-3" type="button" onClick={() => navigate('/ManageVaccSpots')}>Cancel</button>
+                        <button className="btn btn-danger mx-3" type="button" onClick={() => navigate(-1)}>Cancel</button>
                     </div>
 
                 </form>

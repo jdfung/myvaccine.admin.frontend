@@ -1,19 +1,19 @@
 import { Row } from "react-bootstrap"
-import { GetAllApplicants } from "../../Services/Applicant"
+import { GetAllApplicants, GetApplicantByIC } from "../../Services/Applicant"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-export default () => {
+export default ({Token}) => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const applicantData = useSelector(state => state.ApplicantsReducer.Applicants);
     const [allApplicantData, setAllApplicantData] = useState({Data: null, isFetching: true})
+    const [searchFrom, setSearchForm] = useState("");
 
     useEffect(() => {
         GetAllApplicants(dispatch);
-        
     }, [])
 
     useEffect(() => {
@@ -34,6 +34,25 @@ export default () => {
         })
         
     }
+
+    const handleSearchChange = (e) => {
+        var value = e.target.value;
+        setSearchForm(value)
+    }
+
+    const handleSearchSubmit = async (e) => {
+        e.preventDefault();
+        const status = await GetApplicantByIC(dispatch, searchFrom);
+        if(status == 200)
+            {
+                console.log("here");
+            }
+        else
+        {
+            alert("IC number not found");
+        }
+    }
+        
 
     return allApplicantData.isFetching
     ?(  <div className="mt-5 d-flex justify-content-center">
@@ -57,8 +76,8 @@ export default () => {
                 </div>
 
                 <div className="col-md-6">
-                    <form className="d-flex">
-                        <input className="form-control mx-3" placeholder="Search by IC"></input>
+                    <form className="d-flex" onSubmit={(e) => handleSearchSubmit(e)}>
+                        <input className="form-control mx-3" type="number" maxLength="12" placeholder="Search by IC" onChange={(e) => handleSearchChange(e)}></input>
                         <button className="btn btn-primary">Search</button>
                     </form>
                 </div>

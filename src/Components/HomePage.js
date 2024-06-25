@@ -1,14 +1,21 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, Col, Row } from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
+import { UseRefreshToken } from "../Services/UserRefreshToken";
+import Cookies from "universal-cookie";
 
-export default () => {
+export default ({Token}) => {
     const [selection, setSelection] = useState(1);
     const navigate = useNavigate()
+    const cookies = new Cookies();
+    // useEffect(() => {
+    //     console.log(Token);
+    // }, [])
+
+    
 
     return(
         <>
-
             <div className="card-group h-50">
                 <div className="card">
                     <div className="card-img-top d-flex mt-3 mb-3">
@@ -43,7 +50,7 @@ export default () => {
                         </div>
                         <div className="p-2 flex-fill">
                             <button className="btn btn-primary" onClick={() => {
-                                navigate('/ManageAppointmentStatus')
+                                navigate('/ManageApplicantAppointment')
                             }}>Manage</button>
                         </div>
 

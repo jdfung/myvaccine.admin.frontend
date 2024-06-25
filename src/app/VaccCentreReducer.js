@@ -21,9 +21,12 @@ export const VaccCentreReducer = createSlice({
         },
         setAllDistricts: (state, action) => {
             return {...state, Districts: action.payload}
+        },
+        reset: (state) => {
+            return {...state, VaccCentre: []}
         }
     }
 })
 
-export const {setVaccCentre, setSpeciVaccCentre, setAllStates, setAllDistricts} = VaccCentreReducer.actions;
+export const {setVaccCentre, setSpeciVaccCentre, setAllStates, setAllDistricts, reset} = VaccCentreReducer.actions;
 export default VaccCentreReducer.reducer;
